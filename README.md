@@ -6,7 +6,8 @@ source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
 
 # Install all required packages
 pip install -r requirements.txt
-Step 3: Run the Full PipelineExecute the scripts in the following order to process the data and train the model:# 1. Consolidate and filter raw data
+Step 3: Run the Full PipelineExecute the scripts in the following order to process the data and train the model:
+# 1. Consolidate and filter raw data
 python data_processing.py
 
 # 2. Perform basic cleaning
@@ -25,5 +26,6 @@ python transform_ner_data.py
 python train_ner_model.py
 Step 4: Launch the ApplicationYou need two separate terminals to run the backend and frontend.Terminal 1: Start the FastAPI Backenduvicorn api_backend:app --reload
 The API will be available at http://127.0.0.1:8000.Terminal 2: Start the Streamlit Frontendstreamlit run streamlit_app.py
+
 
 
