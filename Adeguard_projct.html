@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Model Card: ADEGuard NER Tagger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A clean, single-page, top-down report structure was chosen for maximum readability and clarity, reflecting the professional nature of a model card. The information architecture is organized into thematic sections corresponding to the source report (Details, Performance, Training, Limitations). The primary user interaction is centered on the 'Performance' section, featuring an interactive bar chart. Users can toggle between Precision, Recall, and F1-Score to dynamically update the visualization, allowing for a more engaging exploration of the model's success metrics compared to a static table. This structure ensures that while the core information is easily consumable, the key data points are explorable and impactful. -->
+    <!-- Visualization & Content Choices: 
+        - Model Details -> Key-Value List -> Goal: Inform -> Simple, high-contrast text for scannability.
+        - Intended Use -> Icon-driven list -> Goal: Inform -> Uses icons to visually anchor key concepts like user personas and goals, improving comprehension.
+        - Performance Metrics -> Interactive Bar Chart (Chart.js) + Summary Cards -> Goal: Compare/Analyze -> Users can dynamically switch the chart's focus between Precision, Recall, and F1-score via buttons. This interaction makes the high-performance data the hero of the page and encourages exploration. The chart is placed in a properly constrained container for responsiveness.
+        - Training Data -> Process Flow Diagram (HTML/CSS) -> Goal: Organize -> Visually represents the data pipeline (Source -> Refine -> Label) in a more intuitive way than plain text.
+        - Limitations -> Alert-style Cards -> Goal: Inform/Warn -> Uses distinct styling (color, icons) to draw attention to critical ethical considerations and usage constraints, ensuring this vital information is not overlooked.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800">Model Card</h1>
+            <p class="mt-2 text-xl text-slate-600">ADEGuard NER Tagger</p>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-8">
+
+                <!-- Performance Section -->
+                <section class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-4 flex items-center">
+                        <span class="text-2xl mr-3">📊</span> Model Performance
+                    </h2>
+                    <p class="text-slate-600 mb-6">
+                        The model demonstrates exceptionally high performance on a holdout test set, validating its effectiveness for production use. Use the buttons below to explore the different performance metrics.
+                    </p>
+                    <div id="metric-controls" class="flex justify-center space-x-2 mb-6">
+                        <button class="metric-btn bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-lg transition-colors duration-200" data-metric="precision">Precision</button>
+                        <button class="metric-btn bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-lg transition-colors duration-200" data-metric="recall">Recall</button>
+                        <button class="metric-btn bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200" data-metric="f1">F1-Score</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Training Data Section -->
+                <section class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-4 flex items-center">
+                        <span class="text-2xl mr-3">🛠️</span> Training Data & Method
+                    </h2>
+                     <p class="text-slate-600 mb-6">
+                        The model was fine-tuned using a modern, efficient data pipeline designed to create a large, high-quality, domain-specific dataset. This programmatic approach was key to achieving high performance.
+                    </p>
+                    <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="text-center p-4 rounded-lg flex-1">
+                             <div class="text-4xl mb-2">📄</div>
+                            <h3 class="font-bold text-slate-800">Source Data</h3>
+                            <p class="text-sm text-slate-500">Public VAERS database, filtered for COVID-19 reports (2020-2025).</p>
+                        </div>
+                        <div class="text-2xl text-slate-300 font-light">→</div>
+                        <div class="text-center p-4 rounded-lg flex-1">
+                             <div class="text-4xl mb-2">🔬</div>
+                            <h3 class="font-bold text-slate-800">Preprocessing</h3>
+                            <p class="text-sm text-slate-500">A LangGraph pipeline performed cleaning & semantic chunking.</p>
+                        </div>
+                         <div class="text-2xl text-slate-300 font-light">→</div>
+                        <div class="text-center p-4 rounded-lg flex-1">
+                             <div class="text-4xl mb-2">🤖</div>
+                            <h3 class="font-bold text-slate-800">Programmatic Labeling</h3>
+                            <p class="text-sm text-slate-500">A powerful LLM generated a "Silver Data" set with expert-level labels.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-8">
+                <!-- Model Details -->
+                <section class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 border-b pb-2">Model Details</h3>
+                    <div class="space-y-3 text-sm">
+                        <p><strong>Version:</strong> <span class="text-slate-600">1.0.0</span></p>
+                        <p><strong>Base Model:</strong> <span class="text-slate-600">dmis-lab/biobert-v1.1</span></p>
+                        <p><strong>Developer:</strong> <span class="text-slate-600">Mohit Dhawane</span></p>
+                        <p><strong>Date:</strong> <span class="text-slate-600">September 6, 2025</span></p>
+                    </div>
+                </section>
+                
+                <!-- Intended Use -->
+                <section class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 border-b pb-2">Intended Use</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="text-xl mr-3 mt-1">🎯</span>
+                            <div>
+                                <h4 class="font-semibold">Primary Goal</h4>
+                                <p class="text-sm text-slate-600">To accelerate adverse event analysis by automatically extracting ADE and DRUG entities from VAERS reports.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                             <span class="text-xl mr-3 mt-1">👥</span>
+                            <div>
+                                <h4 class="font-semibold">Target Users</h4>
+                                <p class="text-sm text-slate-600">Pharmacovigilance professionals, drug safety regulators, and clinical researchers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Limitations Section -->
+        <section class="mt-8 bg-amber-50 border border-amber-200 p-6 rounded-xl">
+             <h2 class="text-2xl font-bold text-amber-800 mb-4 flex items-center">
+                <span class="text-2xl mr-3">⚠️</span> Limitations & Ethical Considerations
+            </h2>
+            <p class="text-amber-700 mb-6">
+                This model is a powerful tool but must be used responsibly and with full awareness of its limitations. Human oversight is mandatory for any clinical or regulatory decision.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-white p-4 rounded-lg border">
+                    <h4 class="font-bold text-amber-900">Narrow Scope</h4>
+                    <p class="text-slate-600 mt-1">Performance is only guaranteed on VAERS COVID-19 reports. Use on other clinical text requires re-evaluation and fine-tuning.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border">
+                    <h4 class="font-bold text-amber-900">Not a Diagnostic Tool</h4>
+                    <p class="text-slate-600 mt-1">This is an information extraction tool, not a medical device. It does not determine causality or provide diagnoses.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border">
+                    <h4 class="font-bold text-amber-900">Potential for Bias</h4>
+                    <p class="text-slate-600 mt-1">Trained on US-based data, the model may exhibit biases related to terminology or demographics present in the VAERS dataset.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border">
+                    <h4 class="font-bold text-amber-900">Human Oversight Required</h4>
+                    <p class="text-slate-600 mt-1">All model outputs are for decision support only and must be reviewed by a qualified human expert before action is taken.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const performanceData = {
+                labels: ['ADE', 'DRUG'],
+                precision: [0.9330, 0.9950],
+                recall: [0.9799, 0.9950],
+                f1: [0.9559, 0.9950]
+            };
+
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            let performanceChart;
+
+            const createOrUpdateChart = (metric) => {
+                const data = performanceData[metric];
+                const friendlyMetricName = {
+                    precision: 'Precision',
+                    recall: 'Recall',
+                    f1: 'F1-Score'
+                }[metric];
+
+                if (performanceChart) {
+                    performanceChart.data.datasets[0].data = data;
+                    performanceChart.data.datasets[0].label = friendlyMetricName;
+                    performanceChart.update();
+                } else {
+                    performanceChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: performanceData.labels,
+                            datasets: [{
+                                label: friendlyMetricName,
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    min: 0.9,
+                                    max: 1.0,
+                                    grid: {
+                                        color: '#e5e7eb'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                title: {
+                                    display: true,
+                                    text: `Model Performance: ${friendlyMetricName}`,
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += context.parsed.y.toFixed(4);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                 performanceChart.options.plugins.title.text = `Model Performance: ${friendlyMetricName}`;
+                 performanceChart.update();
+            };
+            
+            const metricButtons = document.querySelectorAll('.metric-btn');
+            metricButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    metricButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('bg-slate-200', 'text-slate-700');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white');
+                    button.classList.remove('bg-slate-200', 'text-slate-700');
+                    
+                    const metric = button.dataset.metric;
+                    createOrUpdateChart(metric);
+                });
+            });
+
+            // Initial chart render
+            createOrUpdateChart('f1');
+        });
+    </script>
+</body>
+</html>

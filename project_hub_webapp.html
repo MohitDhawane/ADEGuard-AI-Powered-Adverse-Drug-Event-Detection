@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADEGuard Project Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: The application is designed as an interactive project showcase with a persistent sidebar for navigation, allowing users to non-linearly explore the project's facets. The information architecture is broken down into logical sections: Overview, Architecture, Tech Stack, a Live Demo, and Setup instructions. This structure was chosen to cater to different audiences: stakeholders can grasp the overview and demo, while developers can dive into the architecture and setup. The most critical interaction is the "Live Demo" section, which simulates the NER model's functionality directly in the browser, providing immediate, tangible proof of the project's capability without needing to run the backend. -->
+    <!-- Visualization & Content Choices: 
+        - Project Overview -> Text & Stats -> Goal: Inform -> High-level summary with key metrics (like F1-score) to immediately establish credibility.
+        - System Architecture -> Interactive Diagram (HTML/CSS) -> Goal: Organize/Explain -> A custom diagram built with Tailwind Flexbox allows users to hover over each stage of the MLOps pipeline (Refinery, API, etc.) to get more detailed information, making the complex workflow easy to understand.
+        - Tech Stack -> Icon Cards -> Goal: Inform -> A clean, visual grid of technology cards with icons (Unicode) makes the stack quickly scannable.
+        - Live Demo -> Interactive Text Input -> Goal: Engage/Demonstrate -> An input area lets users type a sentence. JavaScript simulates the NER pipeline (using keyword matching) and dynamically renders the text with highlighted ADE/DRUG entities. This provides a "wow" factor and tangible interaction.
+        - Setup Guide -> Numbered List with Code Blocks -> Goal: Instruct -> Clear, copy-pasteable instructions for technical users.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .sidebar-link.active { background-color: #f1f5f9; color: #0f172a; font-weight: 600; }
+        .highlight-ade { background-color: #fecaca; padding: 2px 4px; border-radius: 4px; }
+        .highlight-drug { background-color: #bfdbfe; padding: 2px 4px; border-radius: 4px; }
+        .arch-diagram-item { transition: all 0.2s ease-in-out; }
+        .arch-diagram-item:hover { transform: translateY(-4px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    </style>
+</head>
+<body class="flex">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sticky top-0 h-screen w-64 bg-white shadow-md hidden lg:block">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-slate-800">🛡️ ADEGuard</h2>
+            <p class="text-sm text-slate-500">Project Hub</p>
+        </div>
+        <nav class="mt-6">
+            <a href="#overview" class="sidebar-link active block py-3 px-6 text-slate-600 hover:bg-slate-100">Project Overview</a>
+            <a href="#architecture" class="sidebar-link block py-3 px-6 text-slate-600 hover:bg-slate-100">System Architecture</a>
+            <a href="#tech-stack" class="sidebar-link block py-3 px-6 text-slate-600 hover:bg-slate-100">Tech Stack</a>
+            <a href="#demo" class="sidebar-link block py-3 px-6 text-slate-600 hover:bg-slate-100">Live Demo</a>
+            <a href="#setup" class="sidebar-link block py-3 px-6 text-slate-600 hover:bg-slate-100">Setup & Usage</a>
+        </nav>
+        <div class="absolute bottom-4 px-6 text-xs text-slate-400">
+            <p>Developed by Mohit Dhawane</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="w-full p-4 sm:p-8 lg:p-12 overflow-y-auto h-screen">
+        
+        <!-- Overview Section -->
+        <section id="overview" class="mb-16">
+            <h1 class="text-4xl font-bold text-slate-900">Project Overview</h1>
+            <p class="mt-4 text-lg text-slate-600">ADEGuard is an end-to-end AI system designed to detect Adverse Drug Events (ADEs) from unstructured VAERS reports. It transforms noisy, free-text symptom notes into clean, structured, and actionable insights to enhance drug safety monitoring. The core of the system is a fine-tuned BioBERT model that achieves over a **97% F1-Score** in identifying `ADE` and `DRUG` entities.</p>
+        </section>
+
+        <!-- System Architecture Section -->
+        <section id="architecture" class="mb-16">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">System Architecture</h1>
+            <p class="text-lg text-slate-600 mb-8">The project follows a modern MLOps pipeline, from data processing to deployment. Hover over each component to learn more.</p>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                <div class="arch-diagram-item relative group bg-white p-6 rounded-xl shadow-sm border w-full md:w-auto text-center">
+                    <h3 class="font-bold text-blue-600">📄 Data Refinery</h3>
+                    <p class="text-sm text-slate-500">LangGraph Pipeline</p>
+                    <div class="absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Cleans raw text, performs semantic chunking, and enriches data with metadata.</div>
+                </div>
+                <div class="text-2xl text-slate-400 font-light">→</div>
+                <div class="arch-diagram-item relative group bg-white p-6 rounded-xl shadow-sm border w-full md:w-auto text-center">
+                    <h3 class="font-bold text-green-600">🤖 Model Training</h3>
+                    <p class="text-sm text-slate-500">Programmatic Labeling</p>
+                    <div class="absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">An LLM generates a "Silver Data" set to fine-tune a BioBERT NER model using the Transformers library.</div>
+                </div>
+                <div class="text-2xl text-slate-400 font-light">→</div>
+                <div class="arch-diagram-item relative group bg-white p-6 rounded-xl shadow-sm border w-full md:w-auto text-center">
+                    <h3 class="font-bold text-purple-600">📡 API Backend</h3>
+                    <p class="text-sm text-slate-500">FastAPI Server</p>
+                     <div class="absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">The trained model is served via a high-performance REST API, making it accessible for any application.</div>
+                </div>
+                <div class="text-2xl text-slate-400 font-light">→</div>
+                <div class="arch-diagram-item relative group bg-white p-6 rounded-xl shadow-sm border w-full md:w-auto text-center">
+                    <h3 class="font-bold text-amber-600">🖥️ Streamlit UI</h3>
+                    <p class="text-sm text-slate-500">Interactive Dashboard</p>
+                    <div class="absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">A user-friendly web interface for real-time text analysis, powered by the API backend.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section id="tech-stack" class="mb-16">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">Technology Stack</h1>
+            <p class="text-lg text-slate-600 mb-8">This project was built using a combination of powerful, open-source libraries and frameworks from the Python ecosystem.</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🐍</span> Python</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🤗</span> Transformers</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🔗</span> LangGraph</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🤖</span> FastAPI</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🎈</span> Streamlit</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🏷️</span> Label Studio</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">📊</span> Pandas</div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border text-center"><span class="text-2xl mr-2">🧪</span> Seqeval</div>
+            </div>
+        </section>
+
+        <!-- Live Demo Section -->
+        <section id="demo" class="mb-16">
+             <h1 class="text-4xl font-bold text-slate-900 mb-2">Live NER Demo</h1>
+            <p class="text-lg text-slate-600 mb-8">Enter a sentence below to see a live simulation of the entity extraction model. This demo uses keyword matching to replicate the trained model's behavior directly in your browser.</p>
+            <div class="bg-white p-6 rounded-xl shadow-sm border">
+                <textarea id="demo-input" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-shadow" rows="4" placeholder="e.g., Patient felt dizzy and developed a rash after the Pfizer vaccine..."></textarea>
+                <button id="demo-button" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">Extract Entities</button>
+                <div class="mt-6">
+                    <h3 class="font-bold text-lg">Results:</h3>
+                    <div id="demo-output" class="mt-2 p-4 bg-slate-50 rounded-lg min-h-[100px] text-slate-700 leading-relaxed">
+                        Your results will appear here...
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Setup Section -->
+        <section id="setup" class="mb-16">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">Setup & Usage</h1>
+            <p class="text-lg text-slate-600 mb-8">Follow these steps to run the entire project on your local machine.</p>
+            <div class="space-y-4 bg-white p-6 rounded-xl shadow-sm border">
+                <div>
+                    <h3 class="font-bold text-lg">1. Clone the Repository</h3>
+                    <pre class="bg-slate-800 text-white p-3 rounded-lg mt-2 text-sm"><code>git clone [repository-url]</code></pre>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">2. Install Dependencies</h3>
+                    <pre class="bg-slate-800 text-white p-3 rounded-lg mt-2 text-sm"><code>pip install -r requirements.txt</code></pre>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">3. Run the Full Pipeline</h3>
+                     <p class="text-slate-600 mt-1 text-sm">Execute the scripts in order to process data and train the model.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">4. Launch the Application</h3>
+                     <p class="text-slate-600 mt-1 text-sm">Start the backend API first, then the frontend UI in separate terminals.</p>
+                    <pre class="bg-slate-800 text-white p-3 rounded-lg mt-2 text-sm"><code># Terminal 1: Start Backend
+uvicorn api_backend:app --reload
+
+# Terminal 2: Start Frontend
+streamlit run streamlit_app.py</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Active Sidebar Link on Scroll ---
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.sidebar-link');
+            
+            const activateLink = (id) => {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        activateLink(entry.target.id);
+                    }
+                });
+            }, { rootMargin: '-30% 0px -70% 0px' });
+
+            sections.forEach(section => observer.observe(section));
+
+            // --- Live Demo NER Simulation ---
+            const demoButton = document.getElementById('demo-button');
+            const demoInput = document.getElementById('demo-input');
+            const demoOutput = document.getElementById('demo-output');
+
+            const keywordMap = {
+                "ADE": ["headache", "nausea", "dizzy", "pain", "rash", "numbness", "erythema", "swelling", "fever", "chills", "fatigue", "vomiting", "injection site pain"],
+                "DRUG": ["pfizer", "moderna", "biontech", "janssen", "covid-19 vaccine"]
+            };
+
+            demoButton.addEventListener('click', () => {
+                const text = demoInput.value;
+                if (!text.trim()) {
+                    demoOutput.innerHTML = 'Please enter some text.';
+                    return;
+                }
+
+                let highlightedText = text;
+                const replacements = [];
+
+                Object.keys(keywordMap).forEach(label => {
+                    const highlightClass = label === 'ADE' ? 'highlight-ade' : 'highlight-drug';
+                    keywordMap[label].forEach(keyword => {
+                        const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
+                        highlightedText = highlightedText.replace(regex, (match) => {
+                             return `<span class="${highlightClass}">${match}</span>`;
+                        });
+                    });
+                });
+
+                demoOutput.innerHTML = highlightedText;
+            });
+        });
+    </script>
+</body>
+</html>
